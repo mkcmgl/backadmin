@@ -81,12 +81,12 @@
       :title="tmForm.id ? '修改品牌' : '添加品牌'"
       :visible.sync="dialogFormVisible"
     >
-      <el-form style="width: 80%" :model="tmForm">
-        <el-form-item label="品牌名称" label-width="100px">
+      <el-form style="width: 80%" :model="tmForm" :rules="rules" ref="ruleForm">
+        <el-form-item label="品牌名称" label-width="100px" prop="tmName">
           <el-input v-model="tmForm.tmName" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="品牌LOGO" label-width="100px">
+        <el-form-item label="品牌LOGO" label-width="100px" prop="logoUrl">
           <el-upload
             class="avatar-uploader"
             action="/dev-api/admin/product/fileUpload"
@@ -118,6 +118,14 @@ export default {
   name: "tradeMark",
 
   data() {
+    var validateTmName = (rule, value, callback) => {
+      //自定义校验规则
+      if (value.length < 2 || value.length > 10) {
+        callback(new Error("品牌名称2-10位"));
+      } else {
+        callback();
+      }
+    };
     return {
       page: 1,
       limit: 3,
@@ -127,6 +135,15 @@ export default {
       tmForm: {
         tmName: "",
         logoUrl: "",
+      },
+      rules: {
+        tmName: [
+          { required: true, message: "请输入品牌名称", trigger: "blur" },
+          //自定义校验规则
+          { validator: validateTmName, trigger: "change" },
+        ],
+        //品牌的logo验证规则
+        logoUrl: [{ required: true, message: "请选择品牌的图片" }],
       },
     };
   },
@@ -166,15 +183,13 @@ export default {
     },
     updateTradeMark(row) {
       this.dialogFormVisible = true;
-      this.tmForm={...row};
-
+      this.tmForm = { ...row };
     },
     deleteTradeMark() {
       this.dialogFormVisible = true;
     },
     handleAvatarSuccess(res, file) {
       this.tmForm.logoUrl = URL.createObjectURL(file.raw);
-      
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
@@ -189,22 +204,28 @@ export default {
       return isJPG && isLt2M;
     },
     addOrUpdateTradeMark() {
-      this.dialogFormVisible = false;
-      return new Promise((resolve, reject) => {
-        this.$API.trademark
-          .reqAddOrUpdateTradeMark(this.tmForm)
-          .then((response) => {
-
-            this.$message({
-              type: this.tmForm.id ?"success":"error",
-              message: this.tmForm.id ? "修改品牌成功" : "添加品牌成功",
-            });
-            this.getPageList(this.tmForm.id ? this.page : 1);
-            resolve();
-          })
-          .catch((error) => {
-            reject(error);
+      this.$refs.ruleForm.validate((success) => {
+        if (success) {
+          this.dialogFormVisible = false;
+          return new Promise((resolve, reject) => {
+            this.$API.trademark
+              .reqAddOrUpdateTradeMark(this.tmForm)
+              .then((response) => {
+                this.$message({
+                  type: this.tmForm.id ? "success" : "error",
+                  message: this.tmForm.id ? "修改品牌成功" : "添加品牌成功",
+                });
+                this.getPageList(this.tmForm.id ? this.page : 1);
+                resolve();
+              })
+              .catch((error) => {
+                reject(error);
+              });
           });
+        }else{
+          console.log("error submit!!");
+          return false;
+        }
       });
     },
   },
