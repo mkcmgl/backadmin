@@ -149,6 +149,7 @@ export default {
   },
 
   mounted() {
+    
     this.getPageList();
   },
 
@@ -156,14 +157,15 @@ export default {
     getPageList(pager = 1) {
       this.page = pager;
       const { page, limit } = this;
-      return new Promise((reslove, reject) => {
+      return new Promise((resolve, reject) => {
         this.$API.trademark
           .reqTradeMarkList(page, limit)
           .then((response) => {
             const { data } = response;
+            console.log(data)
             this.total = data.total;
             this.list = data.records;
-            reslove();
+            resolve();
           })
           .catch((error) => {
             reject(error);

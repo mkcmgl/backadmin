@@ -1,26 +1,26 @@
 <template>
     <div>
-        attr
+        <el-card>
+            <CategorySelect></CategorySelect>
+        </el-card>
+        <el-card>
+
+        </el-card>
+     
     </div>
 </template>
 
 <script>
+
 export default {
-    name: 'BackadminIndex',
-
+    name: "Attr",
     data() {
-        return {
-            
-        };
+        return {};
     },
-
     mounted() {
-        
     },
-
-    methods: {
-        
-    },
+    methods: {},
+ 
 };
 </script>
 
