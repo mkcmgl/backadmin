@@ -101,6 +101,8 @@ export default {
       this.cForm.category2Id = "";
       this.cForm.category3Id = "";
       const { category1Id } = this.cForm;
+      this.$emit("getCategoryId",{categoryId:category1Id,level:1});
+
       return new Promise((resolve, reject) => {
         this.$API.attr
           .reqCategory2List(category1Id)
@@ -120,6 +122,7 @@ export default {
       this.list3 = [];
       this.cForm.category3Id = "";
       const { category2Id } = this.cForm;
+      this.$emit("getCategoryId",{categoryId:category2Id,level:2});
       return new Promise((resolve, reject) => {
         this.$API.attr
           .reqCategory3List(category2Id)
@@ -136,7 +139,7 @@ export default {
     },
     handler3() {
       const { category3Id } = this.cForm;
-      //   this.$emit("getCategoryId", { categoryId: category3Id, level: 3 });
+        this.$emit("getCategoryId", { categoryId: category3Id, level: 3 });
     },
   },
 };
