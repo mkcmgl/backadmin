@@ -56,7 +56,6 @@ npm run preview
 npm run preview -- --report
 
 # code format check
-
 npm run lint
 
 # code format check and auto fix
