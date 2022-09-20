@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">登录</h3>
       </div>
 
       <el-form-item prop="username">
@@ -41,7 +41,7 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
@@ -78,8 +78,8 @@ export default {
         password: '111111'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        // password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
       passwordType: 'password',
@@ -235,3 +235,70 @@ $light_gray:#eee;
   }
 }
 </style>
+
+
+<style lang="scss" scoped>
+  $bg:#2d3a4b;
+  $dark_gray:#889aa4;
+  $light_gray:#eee;
+  
+  .login-container {
+    min-height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background:url(~@/assets/2.png);
+    background-size: 100% 100%;
+  
+    .login-form {
+      position: relative;
+      width: 520px;
+      max-width: 100%;
+      padding: 160px 35px 0;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+  
+    .tips {
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 10px;
+  
+      span {
+        &:first-of-type {
+          margin-right: 16px;
+        }
+      }
+    }
+  
+    .svg-container {
+      padding: 6px 5px 6px 15px;
+      color: $dark_gray;
+      vertical-align: middle;
+      width: 30px;
+      display: inline-block;
+    }
+  
+    .title-container {
+      position: relative;
+  
+      .title {
+        font-size: 26px;
+        color: $light_gray;
+        margin: 0px auto 40px auto;
+        text-align: center;
+        font-weight: bold;
+      }
+    }
+  
+    .show-pwd {
+      position: absolute;
+      right: 10px;
+      top: 7px;
+      font-size: 16px;
+      color: $dark_gray;
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+  </style>
+  
