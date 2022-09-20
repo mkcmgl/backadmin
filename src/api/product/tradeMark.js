@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 
-export const reqTradeMarkList = (page, limit) => request({ url: `/admin/product/baseTrademark/${page}/${limit}`, method: 'get' })
+export const reqTradeMarkList = (page, limit) => request({ url: `/admin/product/baseTrademark/${page}/${limit}`, method: 'get' });
 
 export const reqAddOrUpdateTradeMark = (tradeMark) => {
     if (tradeMark.id) {
@@ -10,4 +10,6 @@ export const reqAddOrUpdateTradeMark = (tradeMark) => {
         return request({ url: '/admin/product/baseTrademark/save', method: 'post', data: tradeMark })
     }
 
-}
+};
+
+export const reqDeleteTradeMark = (id) => request({ url: `/admin/product/baseTrademark/remove/${id}`, method: 'delete' });

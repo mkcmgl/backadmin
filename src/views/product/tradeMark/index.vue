@@ -222,11 +222,42 @@ export default {
                 reject(error);
               });
           });
-        }else{
+        } else {
           console.log("error submit!!");
           return false;
         }
       });
+    },
+    deleteTradeMark(row) {
+      this.$confirm(`你确定删除${row.tmName}?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          console.log(this.$API)
+          return new Promise((resolve, reject) => {
+            console.log(this.$API)
+            this.$API.trademark.reqDeleteTradeMark(row.id).then((response) => {
+            
+              this.$message({
+                type: "success",
+                message: "删除成功!",
+              });
+                //再次获取品牌列表数据
+            this.getPageList(this.list.length > 1 ? this.page : this.page - 1);
+            resolve();
+            }).catch((error)=>{
+              reject(error);
+            });
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
   },
 };
