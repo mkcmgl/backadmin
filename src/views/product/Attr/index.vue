@@ -75,7 +75,7 @@
           :disabled="!attrInfo.attrName"
           >添加属性值</el-button
         >
-        <el-button @click="isShowTanle = true">取消</el-button>
+        <!-- <el-button @click="isShowTanle = true">取消</el-button> -->
         <el-table   style="width: 100%; margin: 20px 0px" border  :data="attrInfo.attrValueList">
           <el-table-column
             align="center"
@@ -93,11 +93,12 @@
               <el-input
                 v-model="row.valueName"
                 placeholder="请输入属性值名称"
-                v-if="flag"
-                @blur="flag=false"
-                @keyup.native.enter="flag=false"
+                v-if="row.flag"
+                @blur="toLook(row)"
+                @keyup.native.enter="toLook(row)"
+                :ref="$index"
               ></el-input>
-              <span v-else @click="flag=true" style="display: block;">{{row.valueName}}</span>
+              <span v-else @click="toEdit(row,$index)" style="display: block;">{{row.valueName}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -107,11 +108,9 @@
             width="width"
           >
             <template slot-scope="{ row, $index }">
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-              ></el-button>
+
+                <el-button  type="danger" size="mini" @click="open(row)">删除</el-button>
+
             </template>
           </el-table-column>
         </el-table>
@@ -185,6 +184,10 @@ export default {
         ValueName: "",
         flag:true,
       });
+      this.$nextTick(() => {
+        
+        this.$refs[this.attrInfo.attrValueList.length - 1].focus();
+      });
     },
     addAttr() {
         this.isShowTanle=false;
@@ -200,8 +203,60 @@ export default {
     updataAttr(row){
         this.isShowTanle=false;
         this.attrInfo=cloneDeep(row);
+        this.attrInfo.attrValueList.forEach((item)=>{
+            this.$set(item,'flag',false)
+        })
     },
     addOrUpdateAttr() {},
+    toLook(row){
+  
+        if(row.valueName == undefined){
+            this.$message('输入内容')
+            return
+        }
+            if(row.valueName.trim() == ""){
+           this.$message('输入错误') 
+           return
+        }
+        let isRepat= this.attrInfo.attrValueList.some((item)=>{
+        
+            if(row.attrId!==item.attrId ){
+               return row.ValueName==item.ValueName
+            }
+        });
+        if(isRepat){
+            this.$message('输入内容'); 
+            return;
+        } 
+ 
+        row.flag=false;
+        
+    },
+    toEdit(row,index){
+        row.flag=true;
+        this.$nextTick(() => {
+        
+        this.$refs[index].focus();
+      });
+    },
+    open(row) {
+        this.$confirm('确定删除'+row.valueName+', 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      }
+    
   },
   //https://blog.csdn.net/qq_45659769/article/details/125970317
 };

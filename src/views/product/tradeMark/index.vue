@@ -149,7 +149,6 @@ export default {
   },
 
   mounted() {
-    
     this.getPageList();
   },
 
@@ -162,7 +161,7 @@ export default {
           .reqTradeMarkList(page, limit)
           .then((response) => {
             const { data } = response;
-            console.log(data)
+            console.log(data);
             this.total = data.total;
             this.list = data.records;
             resolve();
@@ -237,35 +236,44 @@ export default {
         type: "warning",
       })
         .then(() => {
-          console.log(this.$API)
-          return new Promise((resolve, reject) => {
-            console.log(this.$API)
-            this.$API.trademark.reqDeleteTradeMark(row.id).then((response) => {
-            
+          // console.log(this.$API)
+          // return new Promise((resolve, reject) => {
+          //   console.log(this.$API)
+          //   this.$API.trademark.reqDeleteTradeMark(row.id).then((response) => {
+
+          //     this.$message({
+          //       type: "success",
+          //       message: "删除成功!",
+          //     });
+          //       //再次获取品牌列表数据
+          //   this.getPageList(this.list.length > 1 ? this.page : this.page - 1);
+          //   // resolve();
+          //   }).catch((error)=>{
+          //     // reject(error);
+          //   });
+          // });
+          this.$API.trademark.reqDeleteTradeMark(row.id).then((res) => {
+            if (res.code == 200) {
               this.$message({
                 type: "success",
                 message: "删除成功!",
               });
-                //再次获取品牌列表数据
-            this.getPageList(this.list.length > 1 ? this.page : this.page - 1);
-            resolve();
-            }).catch((error)=>{
-              reject(error);
-            });
+              this.getPageList(
+                this.list.length > 1 ? this.page : this.page - 1
+              );
+            }
           });
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除", 
+            message: "已取消删除",
           });
         });
     },
   },
 };
 </script>
-
-
 
 <style>
 .avatar-uploader .el-upload {
@@ -296,5 +304,4 @@ export default {
 }
 </style>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
