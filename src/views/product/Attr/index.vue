@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card>
-      <CategorySelect @getCategoryId="getCategoryId"></CategorySelect>
+      <CategorySelect @getCategoryId="getCategoryId" :show="!isShowTanle"></CategorySelect>
     </el-card>
     <el-card>
       <div v-show="isShowTanle">
@@ -109,12 +109,12 @@
           >
             <template slot-scope="{ row, $index }">
 
-                <el-button  type="danger" size="mini" @click="open(row)">删除</el-button>
+                <el-button  type="danger" size="mini" @click="open(row,$index)">删除</el-button>
 
             </template>
           </el-table-column>
         </el-table>
-        <el-button type="primary">保存</el-button>
+        <el-button type="primary" @click="addOrUpdateAttr">保存</el-button>
         <el-button @click="isShowTanle = true">取消</el-button>
       </div>
     </el-card>
@@ -239,12 +239,13 @@ export default {
         this.$refs[index].focus();
       });
     },
-    open(row) {
+    open(row,index) {
         this.$confirm('确定删除'+row.valueName+', 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.attrInfo.attrValueList.splice(index, 1);
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -255,6 +256,22 @@ export default {
             message: '已取消删除'
           });          
         });
+      },
+      addOrUpdateAttr(){
+        this.attrInfo.attrValueList=this.attrInfo.attrValueList.filter((item)=>{
+          if(item.valueName!==''){
+            delete item.flag;
+            return true;
+          }
+        });
+        this.$API.attr.reqAddOrUpdateAttr(this.attrInfo).then((res)=>{
+        this.isShowTanle=true;
+        this.$message({type:'success',message:'保存成功'})  ;
+        this.getAttrList()
+        }).catch((error)=>{
+
+          this.$message('保存失败')
+        })
       }
     
   },

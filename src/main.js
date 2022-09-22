@@ -15,6 +15,9 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import HintButton from '@/components/HintButton';
+Vue.component(HintButton.name, HintButton);
+
 import API from '@/api';
 
 Vue.prototype.$API = API;
