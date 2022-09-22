@@ -65,7 +65,7 @@
         <el-pagination
         style="margin-top: 20px; text-align: center"
         :current-page="page"
-        :page-sizes="[10,20,50]"
+        :page-sizes="[3,5,10]"
         :page-size="limit"
         @current-change="getSpuList"
         @size-change="handleSizeChange"
@@ -146,7 +146,7 @@ export default {
     },
     updateSpu(row){
         this.scene=1;
-        this.$refs.spu.initSpuData(row.id);
+        this.$refs.spu.initSpuData(row);
 
     },
     changeScene(){

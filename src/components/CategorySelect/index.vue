@@ -10,6 +10,7 @@
           v-model="cForm.category1Id"
           @change="handler1"
           :disabled="show"
+          clearable
         >
           <el-option
             :label="c1.name"
@@ -25,6 +26,7 @@
           v-model="cForm.category2Id"
           @change="handler2"
           :disabled="show"
+          clearable
         >
           <el-option
             :label="c2.name"
@@ -40,6 +42,7 @@
           v-model="cForm.category3Id"
           @change="handler3"
           :disabled="show"
+          clearable
         >
           <el-option
             :label="c3.name"
@@ -59,7 +62,7 @@
 <script>
 export default {
   name: "CategorySelect",
-  props:["show"],
+  props: ["show"],
 
   data() {
     return {
@@ -88,7 +91,7 @@ export default {
           .reqCategory1List()
           .then((response) => {
             const { data } = response;
-            console.log("CategorySelect",data);
+            console.log("CategorySelect", data);
             this.list1 = data;
             resolve();
           })
@@ -97,6 +100,7 @@ export default {
           });
       });
     },
+
     handler1() {
       //清除数据
 
@@ -105,28 +109,31 @@ export default {
       this.cForm.category2Id = "";
       this.cForm.category3Id = "";
       const { category1Id } = this.cForm;
-      this.$emit("getCategoryId",{categoryId:category1Id,level:1});
+      if (category1Id != "") {
+        this.$emit("getCategoryId", { categoryId: category1Id, level: 1 });
 
-      return new Promise((resolve, reject) => {
-        this.$API.attr
-          .reqCategory2List(category1Id)
-          .then((response) => {
-            const { data } = response;
+        return new Promise((resolve, reject) => {
+          this.$API.attr
+            .reqCategory2List(category1Id)
+            .then((response) => {
+              const { data } = response;
 
-            this.list2 = data;
-            resolve();
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
+              this.list2 = data;
+              resolve();
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        });
+      }
     },
     handler2() {
       //清除数据
       this.list3 = [];
       this.cForm.category3Id = "";
       const { category2Id } = this.cForm;
-      this.$emit("getCategoryId",{categoryId:category2Id,level:2});
+      if(category2Id!=''){
+        this.$emit("getCategoryId", { categoryId: category2Id, level: 2 });
       return new Promise((resolve, reject) => {
         this.$API.attr
           .reqCategory3List(category2Id)
@@ -140,10 +147,13 @@ export default {
             reject(error);
           });
       });
+      }
+      
     },
     handler3() {
       const { category3Id } = this.cForm;
-        this.$emit("getCategoryId", { categoryId: category3Id, level: 3 });
+      // if(category3Id!='')
+      this.$emit("getCategoryId", { categoryId: category3Id, level: 3 });
     },
   },
 };
