@@ -3,77 +3,57 @@
     <el-form ref="form" label-width="80px">
       <el-form-item label="SPU名称">{{ spu.spuName }}</el-form-item>
       <el-form-item label="SKU名称">
-        <el-input
-          placeholder="请输入SKU名称"
-          v-model="skuInfo.skuName"
-        ></el-input>
+        <el-input placeholder="请输入SKU名称" v-model="skuInfo.skuName"></el-input>
       </el-form-item>
       <el-form-item label="价格(元)">
-        <el-input
-        placeholder="请输入价格(元)"
-        type="number"
-        v-model="skuInfo.price"
-      ></el-input>
+        <el-input placeholder="请输入价格(元)" type="number" v-model="skuInfo.price"></el-input>
       </el-form-item>
 
       <el-form-item label="重量(千克)">
-        <el-input
-          placeholder="请输入重量(千克)"
-          v-model="skuInfo.weight"
-        ></el-input>
+        <el-input placeholder="请输入重量(千克)" v-model="skuInfo.weight"></el-input>
       </el-form-item>
       <el-form-item label="规格描述">
-        <el-input
-          type="textarea"
-          placeholder="请输入规格描述"
-          rous="4"
-          v-model="skuInfo.skuDesc"
-        ></el-input>
+        <el-input type="textarea" placeholder="请输入规格描述" rous="4" v-model="skuInfo.skuDesc"></el-input>
       </el-form-item>
       <el-form-item label="平台属性">
         <el-form :inline="true" ref="form" label-width="80px">
-          <el-form-item
-            style="margin: 10px"
-            :label="attr.attrName"
-            v-for="(attr, index) in attrInfoList"
-            :key="attr.id"
-          >
+          <el-form-item style="margin: 10px" :label="attr.attrName" v-for="(attr, index) in attrInfoList"
+            :key="attr.id">
             <el-select placeholder="请选择" v-model="attr.attrIdAndValueId">
-              <el-option
-                v-for="(attrList, index) in attr.attrValueList"
-                :key="attrList.id"
-                :label="attrList.valueName"
-                :value="`${attr.id}:${attrList.valueName}`"
-              ></el-option>
+              <el-option v-for="(attrList, index) in attr.attrValueList" :key="attrList.id" :label="attrList.valueName"
+                :value="`${attr.id}:${attrList.valueName}`"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
       </el-form-item>
       <el-form-item label="销售属性">
         <el-form :inline="true" ref="form" label-width="80px">
-          <el-form-item label="sale.saleAttrName" v-for="(sale,index) in spuSaleAttrList" :key="sale.id">
+          <el-form-item :label="sale.saleAttrName" v-for="(sale,index) in spuSaleAttrList" :key="sale.id">
             <el-select placeholder="请选择" v-model="sale.attrValueList">
-              <el-option :label="saleList.saleAttrValueName" :value="`${sale.id}:${saleList.id}`" v-for="(saleList,index) in sale.spuSaleAttrValueList" :key="saleList.id"></el-option>
+              <el-option :label="saleList.saleAttrValueName" :value="`${sale.id}:${saleList.id}`"
+                v-for="(saleList,index) in sale.spuSaleAttrValueList" :key="saleList.id">
+              </el-option>
             </el-select>
           </el-form-item>
         </el-form>
       </el-form-item>
+
       <el-form-item label="图片列表">
-        <el-table border style="width: 100%" :date="spuImageList"  @selection-change="handleSelectionChange"></el-table>>
+        <el-table style="width: 100%" border :data="spuImageList"  @selection-change="handleSelectionChange">
           <el-table-column type="selection" prop="prop" width="80">
           </el-table-column>
-          <el-table-column label="图片" prop="prop" width="width">
-            <template slot-scope="{row,$index}">
-            <img :src="row.imgUrl" style="width:100px ;height:100px ;">
-            </template>
+          <el-table-column prop="prop" label="图片" width="width">
+             <template slot-scope="{row,$index}">
+                <img :src="row.imgUrl" style="width:100px;height:100px">
+             </template>
           </el-table-column>
-          <el-table-column label="名称" prop="imgName" width="width">
+          <el-table-column prop="imgName" label="名称" width="width">
           </el-table-column>
-          <el-table-column label="操作" prop="prop" width="width">
-            <template slot-scope="{row,$index}">
-                <el-button type="primary"  v-if="row.isDefault==0" @click="changeDefault(row)">设置默认</el-button>
-                <el-button type="success" v-else>默认</el-button>
-            </template>
+          <el-table-column prop="prop" label="操作" width="width">
+              <template slot-scope="{row,$index}">
+                  <el-button type="primary" v-if="row.isDefault==0" @click="changeDefault(row)">设置默认</el-button>
+                  <el-button v-else>默认</el-button>
+              </template>
           </el-table-column>
         </el-table>
       </el-form-item>
@@ -146,7 +126,7 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() { },
 
   methods: {
     async getData(category1Id, category2Id, spu) {
@@ -156,9 +136,11 @@ export default {
       this.spu = spu;
       let result = await this.$API.spu.reqSpuImageLIst(spu.id);
       if (result.code == 200) {
-          this.spuImageList=result.data.forEach((item)=>{
-            item.isDefault=0;
-          });
+        let list = result.data;
+        list.forEach(item => {
+          item.isDefault = 0;
+        });
+        this.spuImageList = list;
       }
       let saleList = await this.$API.spu.reqSpuSaleAttrList(spu.id);
       if (saleList.code == 200) {
@@ -173,24 +155,25 @@ export default {
         this.attrInfoList = infoList.data;
       }
     },
-    handleSelectionChange(params){
-        this.imageList=params;
+    handleSelectionChange(params) {
+      this.imageList = params;
 
     },
     changeDefault(row) {
-        row.isDefault=1;
-        this.skuInfo.skuDefaultImg=row.imgUrl;
+      row.isDefault = 1;
+      this.skuInfo.skuDefaultImg = row.imgUrl;
     },
-    cancel(){
-        this.$emit('changeScenes', 0);
-        Object.assign(this._data,this.$options.data());
+    cancel() {
+      this.$emit('changeScenes', 0);
+      Object.assign(this._data, this.$options.data());
     },
-    save(){
-        
+    save() {
+
     }
   },
 };
 </script>
 
 <style lang="scss" scoped>
+
 </style>
