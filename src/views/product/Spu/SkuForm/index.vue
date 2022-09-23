@@ -167,11 +167,41 @@ export default {
       this.$emit('changeScenes', 0);
       Object.assign(this._data, this.$options.data());
     },
-    save() {
-
-    }
-  },
-};
+    async save() {
+      const {attrInfoList,spuSaleAttrList,skuInfo,imageList}=this;
+      skuInfo.skuAttrValueList=attrInfoList.reduce((prev,item)=>{
+        if(item.attrIdAndValueId){
+          const [attrId,valueId]=item.attrIdAndValueId.split(":")
+          prev.push({attrId,valueId});
+         }
+         return prev;
+      },[]);
+      skuInfo.skuSaleAttrValueList= spuSaleAttrList.reduce((prev,item)=>{
+        if(item.attrValueList){
+          const [saleAttrId,saleAttrValueId] = item.attrIdAndValueId.split(':');
+           prev.push({saleAttrId,saleAttrValueId});
+        }
+        return prev;
+      },[]);
+      skuInfo.skuImageList=imageList.map(item=>{
+        return{
+          imageName:item.imageName,
+          imgUrl:item.imgUrl,
+          isDefault:item.isDefault,
+          spuImgId:item.id,
+        }
+      });
+      let result=await this.$API.spu.reqAddSku(skuInfo);
+      if(result.code==200){
+        this.$message({type:'success',message:'保持成功'})
+        this.$emit('changeScenes',0);
+        // Object.assign(this._data,this.$options.data())
+      }else{
+        this.$message({type:'danger',message:'保持失败'})
+      }
+  }
+}
+}
 </script>
 
 <style lang="scss" scoped>
