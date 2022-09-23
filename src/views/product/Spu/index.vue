@@ -8,7 +8,7 @@
     </el-card>
     <el-card>
       <!-- <div v-show="scene == 0"> -->
-        <div v-show="scene==0">
+      <div v-show="scene == 0">
         <el-button
           type="primary"
           @click="addSpu"
@@ -17,67 +17,73 @@
           >添加SPU</el-button
         >
         <el-table style="width: 100%" border :data="records">
-            <el-table-column type="index" label="序号" width="80" align="center">
-            </el-table-column>
-            <el-table-column prop="spuName" label="SPU名称" width="width">
-            </el-table-column>
-            <el-table-column prop="description" label="SPU描述" width="width">
-            </el-table-column>
-            <el-table-column prop="prop" label="操作" width="width">
-              <template slot-scope="{ row, $index }">
-                <!-- 这里按钮将来用hintButton替换 -->
+          <el-table-column type="index" label="序号" width="80" align="center">
+          </el-table-column>
+          <el-table-column prop="spuName" label="SPU名称" width="width">
+          </el-table-column>
+          <el-table-column prop="description" label="SPU描述" width="width">
+          </el-table-column>
+          <el-table-column prop="prop" label="操作" width="width">
+            <template slot-scope="{ row, $index }">
+              <!-- 这里按钮将来用hintButton替换 -->
+              <hint-button
+                type="success"
+                icon="el-icon-plus"
+                size="mini"
+                title="添加sku"
+                @click="addSku(row)"
+              ></hint-button>
+              <hint-button
+                type="warning"
+                icon="el-icon-edit"
+                size="mini"
+                title="修改spu"
+                @click="updateSpu(row)"
+              ></hint-button>
+              <hint-button
+                type="info"
+                icon="el-icon-info"
+                size="mini"
+                title="查看当前spu全部sku列表"
+                @click="handler(row)"
+              ></hint-button>
+              <el-popconfirm
+                title="这是一段内容确定删除吗？"
+                @onConfirm="deleteSpu(row)"
+              >
                 <hint-button
-                  type="success"
-                  icon="el-icon-plus"
+                  type="danger"
+                  icon="el-icon-delete"
                   size="mini"
-                  title="添加sku"
-                  @click="addSku(row)"
+                  title="删除spu"
+                  slot="reference"
                 ></hint-button>
-                <hint-button
-                  type="warning"
-                  icon="el-icon-edit"
-                  size="mini"
-                  title="修改spu"
-                  @click="updateSpu(row)"
-                ></hint-button>
-                <hint-button
-                  type="info"
-                  icon="el-icon-info"
-                  size="mini"
-                  title="查看当前spu全部sku列表"
-                  @click="handler(row)"
-                ></hint-button>
-                <el-popconfirm
-                  title="这是一段内容确定删除吗？"
-                  @onConfirm="deleteSpu(row)"
-                >
-                  <hint-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    size="mini"
-                    title="删除spu"
-                    slot="reference"
-                  ></hint-button>
-                </el-popconfirm>
-              </template>
-            </el-table-column>
-          </el-table>
+              </el-popconfirm>
+            </template>
+          </el-table-column>
+        </el-table>
         <el-pagination
-        style="margin-top: 20px; text-align: center"
-        :current-page="page"
-        :page-sizes="[3,5,10]"
-        :page-size="limit"
-        @current-change="getSpuList"
-        @size-change="handleSizeChange"
-        :total="total"
-        layout="prev, pager, next, jumper,->, sizes,total"
-
-      >
-      </el-pagination>
-
+          style="margin-top: 20px; text-align: center"
+          :current-page="page"
+          :page-sizes="[3, 5, 10]"
+          :page-size="limit"
+          @current-change="getSpuList"
+          @size-change="handleSizeChange"
+          :total="total"
+          layout="prev, pager, next, jumper,->, sizes,total"
+        >
+        </el-pagination>
       </div>
-      <SpuForm @changeScene="changeScene" ref="spu" v-show="scene==1"></SpuForm>
-      <SkuForm @changeScenes="changeScenes" v-show="scene==2"></SkuForm>
+      <SpuForm
+        @changeScene="changeScene"
+        ref="spu"
+        v-show="scene == 1"
+      ></SpuForm>
+      <SkuForm
+        @changeScenes="changeScenes"
+        ref="sku"
+        v-show="scene == 2"
+      ></SkuForm>
     </el-card>
   </div>
 </template>
@@ -170,6 +176,7 @@ export default {
     },
     addSku(row){
         this.scene=2;
+        this.$refs.sku.getData(this.category1Id, this.category2Id, row);
     },
     changeScenes(scene) {
       this.scene = scene;
