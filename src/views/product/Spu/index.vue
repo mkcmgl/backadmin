@@ -77,13 +77,14 @@
 
       </div>
       <SpuForm @changeScene="changeScene" ref="spu" v-show="scene==1"></SpuForm>
-      <SkuForm  v-show="scene==2"></SkuForm>
+      <SkuForm @changeScenes="changeScenes" v-show="scene==2"></SkuForm>
     </el-card>
   </div>
 </template>
 
 <script>
-    import SkuForm from './SkuForm';
+    import { type } from 'os';
+import SkuForm from './SkuForm';
     import SpuForm from './SpuForm'
 
 export default {
@@ -142,24 +143,38 @@ export default {
     },
     addSpu(){
         this.scene=1;
-
+        this.$refs.spu.addSpuData(this.category3Id);
     },
     updateSpu(row){
         this.scene=1;
         this.$refs.spu.initSpuData(row);
 
     },
-    changeScene(){
-
+    changeScene({ scene, flag }) {
+      //flag这个形参为了区分保存按钮是添加还是修改
+      //切换结构（场景）
+      this.scene = scene;
+      //子组件通知父组件切换场景，需要再次获取SPU列表的数据进行展示
+      if (flag == "修改") {
+        this.getSpuList(this.page);
+      } else {
+        this.getSpuList();
+      }
     },
-    deleteSpu(){},
+    async deleteSpu(row){
+      let result=await this.$API.spu.reqDeleteSpu(row.id)
+      if(result.code==200){
+        this.$message({type:'success',message:'删除成功'});
+      getSpuList(this.records.length>1?this.page:this.page-1) ;
+      }
+    },
     addSku(row){
         this.scene=2;
     },
-    changeScenes(scene){
-        this.scene=scene;
+    changeScenes(scene) {
+      this.scene = scene;
     },
-    handler(){},
+    handler(row){},
     close(){},
   },
 };

@@ -91,7 +91,7 @@ export default {
           .reqCategory1List()
           .then((response) => {
             const { data } = response;
-            console.log("CategorySelect", data);
+     
             this.list1 = data;
             resolve();
           })

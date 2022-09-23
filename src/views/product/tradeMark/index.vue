@@ -162,7 +162,7 @@ export default {
           .reqTradeMarkList(page, limit)
           .then((response) => {
             const { data } = response;
-            console.log(data);
+          
             this.total = data.total;
             this.list = data.records;
             resolve();

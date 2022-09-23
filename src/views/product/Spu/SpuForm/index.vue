@@ -122,7 +122,7 @@
           </el-table-column>
         </el-table>
         <el-form-item>
-          <el-button type="primary">保存</el-button>
+          <el-button type="primary" @click="addOrUpdateSpu">保存</el-button>
           <el-button @click="cancel">取消</el-button>
         </el-form-item>
       </el-form-item>
@@ -131,6 +131,8 @@
 </template>
 
 <script>
+
+
 export default {
   name: "SpuForm",
 
@@ -146,7 +148,7 @@ export default {
         //spu名称
         spuName: "",
         //品牌的id
-        tmId: "",
+        tmId: '',
         //收集SPU图片的信息
         spuImageList: [
           // {
@@ -194,7 +196,9 @@ export default {
       this.dialogVisible = true;
     },
     cancel() {
-      this.$emit("changeScene", { scenne: 0, flag: "" });
+      this.$emit("changeScene", { scene: 0, flag: "" });
+      console.log('_data:',this._data,'options:',this.$options,'options.data:',this.$options.data)
+      console.log(this.$options.data());
       Object.assign(this._data, this.$options.data());
     },
     async initSpuData(spu) {
@@ -265,6 +269,33 @@ export default {
       this.spu.spuSaleAttrList.push(newSaleAttr);
       //清空数据
       this.attrIdAndAttrName = "";
+    },
+    async addOrUpdateSpu(){
+      this.spu.spuImageList=this.spuImageList.map((item)=>{
+        return{
+          imageName:item.name,
+          imageUrl:(item.response&&item.response.data)||item.url
+        }
+      });
+      let result=await this.$API.reqAddOrUpdateSpu(this.spu);
+      if(result.code==200){
+        this.$message({type:'success',message:'保存成功'})
+      this.$emit('changeScene', { scenne: 0, flag: this.spu.id ? "修改" : "添加", });
+
+      }
+      Object.assign(this._data, this.$options.data());
+
+    },
+    async addSpuData(category3Id){
+      this.spu.category3Id=category3Id;
+      let tradeMarkResult = await this.$API.spu.reqTradeMarkList();
+      if (tradeMarkResult.code == 200) {
+        this.tradeMarkList = tradeMarkResult.data;
+      }
+      let saleResult = await this.$API.spu.reqBaseSaleAttrList();
+      if (saleResult.code == 200) {
+        this.saleAttrList = saleResult.data;
+      }
     },
 
   },
