@@ -1,6 +1,7 @@
+
 <template>
   <div>
-    <el-card>
+    <el-card style="margin: 20px 0px">
       <CategorySelect
         @getCategoryId="getCategoryId"
         :show="scene != 0"
@@ -85,17 +86,37 @@
         v-show="scene == 2"
       ></SkuForm>
     </el-card>
+    <el-dialog
+      :title="`${spu.spuName}的sku列表`"
+      :visible.sync="dialogTableVisible"
+      :before-close="close"
+    >
+      <!-- table展示sku列表-->
+      <el-table :data="skuList" style="width: 100%" border 
+      v-loading="loading">
+        <el-table-column prop="skuName" label="名称" width="width">
+        </el-table-column>
+        <el-table-column prop="price" label="价格" width="width">
+        </el-table-column>
+        <el-table-column prop="weight" label="重量" width="width">
+        </el-table-column>
+        <el-table-column label="默认图片" width="width">
+           <template slot-scope="{row,$index}">
+               <img :src="row.skuDefaultImg" alt="" style="width:100px;height:100px;">
+           </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-    import { type } from 'os';
 import SkuForm from './SkuForm';
-    import SpuForm from './SpuForm'
+import SpuForm from './SpuForm'
 
 export default {
   name: "Spu",
-    components:{ SpuForm, SkuForm },
+  components: { SpuForm, SkuForm },
   data() {
     return {
       category1Id: "",
@@ -114,23 +135,23 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() { },
 
   methods: {
-    getCategoryId({categoryId,level}){
-        if(level==1){
-            this.category1Id=categoryId;
-            this.category2Id='';
-            this.category3Id='';
-        }
-        if(level==2){
-            this.category2Id=categoryId;
-            this.category3Id='';
-        }
-        if(level==3){
-            this.category3Id=categoryId;
-            this.getSpuList();
-        }
+    getCategoryId({ categoryId, level }) {
+      if (level == 1) {
+        this.category1Id = categoryId;
+        this.category2Id = '';
+        this.category3Id = '';
+      }
+      if (level == 2) {
+        this.category2Id = categoryId;
+        this.category3Id = '';
+      }
+      if (level == 3) {
+        this.category3Id = categoryId;
+        this.getSpuList();
+      }
     },
     async getSpuList(pages = 1) {
       this.page = pages;
@@ -143,17 +164,17 @@ export default {
       }
     },
 
-    handleSizeChange(limit){
-        this.limit=limit;
-        this.getSpuList();
+    handleSizeChange(limit) {
+      this.limit = limit;
+      this.getSpuList();
     },
-    addSpu(){
-        this.scene=1;
-        this.$refs.spu.addSpuData(this.category3Id);
+    addSpu() {
+      this.scene = 1;
+      this.$refs.spu.addSpuData(this.category3Id);
     },
-    updateSpu(row){
-        this.scene=1;
-        this.$refs.spu.initSpuData(row);
+    updateSpu(row) {
+      this.scene = 1;
+      this.$refs.spu.initSpuData(row);
 
     },
     changeScene({ scene, flag }) {
@@ -167,25 +188,43 @@ export default {
         this.getSpuList();
       }
     },
-    async deleteSpu(row){
-      let result=await this.$API.spu.reqDeleteSpu(row.id)
-      if(result.code==200){
-        this.$message({type:'success',message:'删除成功'});
-      getSpuList(this.records.length>1?this.page:this.page-1) ;
+    async deleteSpu(row) {
+      let result = await this.$API.spu.reqDeleteSpu(row.id)
+      if (result.code == 200) {
+        this.$message({ type: 'success', message: '删除成功' });
+        getSpuList(this.records.length > 1 ? this.page : this.page - 1);
       }
     },
-    addSku(row){
-        this.scene=2;
-        this.$refs.sku.getData(this.category1Id, this.category2Id, row);
+    addSku(row) {
+      this.scene = 2;
+      this.$refs.sku.getData(this.category1Id, this.category2Id, row);
     },
     changeScenes(scene) {
       this.scene = scene;
     },
-    handler(row){},
-    close(){},
+    async handler(row) {
+      this.dialogTableVisible = true;
+      this.spu = row;
+      let result = await this.$API.spu.reqSkuList(row.id);
+      if (result.code == 200) {
+        this.skuList = result.data;
+
+        this.loading=false;
+      }
+
+    },
+    close(done) {
+      //loading属性再次变为真
+      this.loading = true;
+      //清除sku列表的数据
+      this.skuList = [];
+      //管理对话框
+      done();
+    },
   },
 };
 </script>
 
 <style  scoped>
+
 </style>
