@@ -86,7 +86,7 @@
             <el-col :span="6">
             <el-card>
                 <Detail title="访问量" count="88460">
-                    <template>
+                    <template slot="charts">
                         <lineCharts></lineCharts>
                     </template>
                     <template>
@@ -285,6 +285,6 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style  scoped>
 
 </style>

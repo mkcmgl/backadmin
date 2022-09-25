@@ -46,7 +46,7 @@ export default {
 .card-content{
     font-size: 30px;
     padding: 10px 0;
-
+    
 }
 .card-charts{
     height: 50px;
