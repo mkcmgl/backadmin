@@ -16,9 +16,9 @@ export default {
     },
 
     mounted() {
-        console.log(echarts);
-        let lineCharts = echarts.init(this.$refs.chatrs);
-        console.log(lineCharts);
+
+        let lineCharts = echarts.init(this.$refs.charts);
+    
         lineCharts.setOption({
             xAxis: {
                 show: false,
@@ -68,6 +68,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+    .charts {
+        width: 100%;
+        height: 100%;
+      }
 </style>

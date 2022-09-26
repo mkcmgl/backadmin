@@ -4,9 +4,22 @@ import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
     return {
+        //获取token
         token: getToken(),
+        //存储用户名
         name: '',
-        avatar: ''
+        //存储用户头像
+        avatar: '',
+        //服务器返回的菜单信息【根据不同的角色：返回的标记信息，数组里面的元素是字符串】
+        routes: [],
+        //角色信息
+        roles: [],
+        //按钮权限的信息
+        buttons: [],
+        //对比之后【项目中已有的异步路由，与服务器返回的标记信息进行对比最终需要展示的理由】
+        resultAsyncRoutes: [],
+        //用户最终需要展示全部路由
+        resultAllRputes: []
     }
 }
 

@@ -89,7 +89,7 @@
                     <template slot="charts">
                         <lineCharts></lineCharts>
                     </template>
-                    <template>
+                    <template slot="footer"> 
                         <span>日访问量 1234</span>
                     </template>
                   
